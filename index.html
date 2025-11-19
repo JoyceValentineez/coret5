@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Vinix7 Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .input-field {
+            @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-900 focus:border-blue-900 transition duration-200;
+        }
+        .btn-primary {
+            @apply bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition duration-200;
+        }
+        .btn-secondary {
+            @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-xl transition duration-200;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white shadow-sm z-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-900 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-crown text-white"></i>
+                        </div>
+                        <div>
+                            <span class="text-xl font-bold text-gray-900 font-poppins">Vinix7</span>
+                            <p class="text-xs text-gray-500 -mt-1">Admin Panel</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Desktop Menu -->
+                    <div class="hidden lg:flex items-center space-x-1 ml-8">
+                        <a href="dashboard.html" class="px-4 py-2 text-gray-700 hover:text-blue-900 font-medium transition duration-200">
+                            <i class="fas fa-chart-bar mr-2"></i>Dashboard
+                        </a>
+                        <a href="kelola-paket.html" class="px-4 py-2 text-gray-700 hover:text-blue-900 font-medium transition duration-200">
+                            <i class="fas fa-box mr-2"></i>Paket Tour
+                        </a>
+                        <a href="kelola-peserta.html" class="px-4 py-2 text-gray-700 hover:text-blue-900 font-medium transition duration-200">
+                            <i class="fas fa-users mr-2"></i>Peserta
+                        </a>
+                        <a href="settings.html" class="px-4 py-2 bg-blue-900 text-white rounded-xl font-medium transition duration-200">
+                            <i class="fas fa-cog mr-2"></i>Settings
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="hidden sm:flex items-center space-x-3 text-sm text-gray-600">
+                        <i class="fas fa-user-shield text-blue-900"></i>
+                        <span>Administrator</span>
+                    </div>
+                    <div class="relative" id="userMenu">
+                        <button class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-xl px-3 py-2 transition duration-200">
+                            <div class="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-600 text-xs"></i>
+                        </button>
+                        
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 hidden z-50" id="dropdownMenu">
+                            <a href="settings.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition duration-200">
+                                <i class="fas fa-cog mr-3"></i>Settings
+                            </a>
+                            <button onclick="adminAuth.logout()" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 transition duration-200">
+                                <i class="fas fa-sign-out-alt mr-3"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 pb-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Pengaturan Sistem</h1>
+                <p class="text-gray-600 mt-2">Kelola pengaturan website dan akun administrator</p>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <!-- Tab Navigation -->
+                <div class="border-b border-gray-200">
+                    <nav class="flex -mb-px">
+                        <button id="generalTab" class="flex-1 py-4 px-6 text-center font-semibold border-b-2 border-blue-900 text-blue-900 tab-button active" data-tab="general">
+                            <i class="fas fa-cog mr-2"></i>Umum
+                        </button>
+                        <button id="paymentTab" class="flex-1 py-4 px-6 text-center font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 tab-button" data-tab="payment">
+                            <i class="fas fa-credit-card mr-2"></i>Pembayaran
+                        </button>
+                        <button id="securityTab" class="flex-1 py-4 px-6 text-center font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 tab-button" data-tab="security">
+                            <i class="fas fa-shield-alt mr-2"></i>Keamanan
+                        </button>
+                        <button id="systemTab" class="flex-1 py-4 px-6 text-center font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 tab-button" data-tab="system">
+                            <i class="fas fa-database mr-2"></i>Sistem
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="p-6">
+                    <!-- General Settings -->
+                    <div id="generalContent" class="tab-content active">
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Website</label>
+                                    <input type="text" id="siteTitle" class="input-field" placeholder="Vinix7 Study & Business Tour">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Kontak</label>
+                                    <input type="email" id="contactEmail" class="input-field" placeholder="info@vinix7.com">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
+                                <input type="text" id="contactPhone" class="input-field" placeholder="+62 812-3456-7890">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Template Link Grup WhatsApp</label>
+                                <input type="url" id="whatsappGroup" class="input-field" placeholder="https://wa.me/6281234567890">
+                                <p class="text-sm text-gray-500 mt-1">Link template yang akan dikirim ke peserta yang terverifikasi</p>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+                                <div>
+                                    <p class="font-medium text-blue-900">Verifikasi Otomatis</p>
+                                    <p class="text-sm text-blue-700">Secara otomatis verifikasi peserta setelah upload bukti transfer</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="autoVerification" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-900"></div>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                                <div>
+                                    <p class="font-medium text-green-900">Notifikasi Email</p>
+                                    <p class="text-sm text-green-700">Kirim notifikasi email ke admin ketika ada pendaftaran baru</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="emailNotification" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Settings -->
+                    <div id="paymentContent" class="tab-content">
+                        <div class="space-y-6">
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-exclamation-triangle text-yellow-600 mr-3 text-xl"></i>
+                                    <div>
+                                        <p class="font-medium text-yellow-900">Informasi Rekening Bank</p>
+                                        <p class="text-sm text-yellow-700">Informasi ini akan ditampilkan di halaman pendaftaran untuk transfer pembayaran</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Bank</label>
+                                    <input type="text" id="bankName" class="input-field" placeholder="BCA">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Rekening</label>
+                                    <input type="text" id="bankAccount" class="input-field" placeholder="1234 5678 9012">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Pemilik Rekening</label>
+                                <input type="text" id="accountName" class="input-field" placeholder="PT. Vinix7 Indonesia">
+                            </div>
+
+                            <div class="bg-blue-50 rounded-xl p-4">
+                                <h3 class="font-semibold text-blue-900 mb-3">Preview Tampilan</h3>
+                                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                                    <p class="font-semibold text-gray-900">Transfer ke Rekening Vinix7:</p>
+                                    <div class="mt-3 space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Bank:</span>
+                                            <span id="previewBank" class="font-semibold">BCA</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">No. Rekening:</span>
+                                            <span id="previewAccount" class="font-mono font-semibold">1234 5678 9012</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Atas Nama:</span>
+                                            <span id="previewName" class="font-semibold">PT. Vinix7 Indonesia</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div id="securityContent" class="tab-content">
+                        <div class="space-y-6">
+                            <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-shield-alt text-red-600 mr-3 text-xl"></i>
+                                    <div>
+                                        <p class="font-medium text-red-900">Keamanan Akun Administrator</p>
+                                        <p class="text-sm text-red-700">Ubah password untuk meningkatkan keamanan akun Anda</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Username Saat Ini</label>
+                                    <input type="text" id="currentUsername" class="input-field bg-gray-100" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Administrator *</label>
+                                    <input type="email" id="adminEmail" class="input-field" placeholder="admin@vinix7.com" required>
+                                </div>
+                            </div>
+
+                            <div class="border-t pt-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Ubah Password</h3>
+                                <p class="text-sm text-gray-600 mb-4">Kosongkan field password jika tidak ingin mengubah password</p>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Password Saat Ini</label>
+                                        <input type="password" id="currentPassword" class="input-field" placeholder="Masukkan password saat ini">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Password Baru</label>
+                                        <input type="password" id="newPassword" class="input-field" placeholder="Minimal 6 karakter">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password Baru</label>
+                                        <input type="password" id="confirmPassword" class="input-field" placeholder="Ketik ulang password baru">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-green-900">Sesi Login Aktif</p>
+                                        <p class="text-sm text-green-700" id="sessionInfo">Terakhir login: -</p>
+                                    </div>
+                                    <button onclick="logoutAllSessions()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-200 text-sm">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Logout Semua Sesi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Settings -->
+                    <div id="systemContent" class="tab-content">
+                        <div class="space-y-6">
+                            <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-database text-purple-600 mr-3 text-xl"></i>
+                                    <div>
+                                        <p class="font-medium text-purple-900">Manajemen Data Sistem</p>
+                                        <p class="text-sm text-purple-700">Backup dan reset data sistem</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- System Info -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <h4 class="font-semibold text-gray-900 mb-3">Informasi Sistem</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Total Peserta:</span>
+                                            <span id="systemTotalPeserta" class="font-semibold">0</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Total Paket:</span>
+                                            <span id="systemTotalPaket" class="font-semibold">0</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Ukuran Data:</span>
+                                            <span id="systemDataSize" class="font-semibold">0 KB</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Versi Sistem:</span>
+                                            <span class="font-semibold">v1.0.0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <h4 class="font-semibold text-gray-900 mb-3">Status Sistem</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600">Database:</span>
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Aktif</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600">Storage:</span>
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Local</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600">Backup:</span>
+                                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">Manual</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600">Keamanan:</span>
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Aman</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Backup & Reset -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-blue-50 rounded-xl p-6 text-center">
+                                    <i class="fas fa-download text-blue-900 text-3xl mb-4"></i>
+                                    <h4 class="font-semibold text-blue-900 mb-2">Backup Data</h4>
+                                    <p class="text-sm text-blue-700 mb-4">Download backup semua data sistem</p>
+                                    <button onclick="backupData()" class="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-xl transition duration-200 w-full">
+                                        <i class="fas fa-file-export mr-2"></i>Download Backup
+                                    </button>
+                                </div>
+
+                                <div class="bg-red-50 rounded-xl p-6 text-center">
+                                    <i class="fas fa-trash-alt text-red-900 text-3xl mb-4"></i>
+                                    <h4 class="font-semibold text-red-900 mb-2">Reset Data</h4>
+                                    <p class="text-sm text-red-700 mb-4">Hapus semua data peserta dan reset sistem</p>
+                                    <button onclick="showResetModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-200 w-full">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i>Reset Sistem
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Import Data -->
+                            <div class="bg-green-50 rounded-xl p-6">
+                                <h4 class="font-semibold text-green-900 mb-3">Import Data</h4>
+                                <p class="text-sm text-green-700 mb-4">Upload file backup untuk restore data sistem</p>
+                                <div class="border-2 border-dashed border-green-300 rounded-xl p-6 text-center hover:border-green-400 transition duration-200">
+                                    <input type="file" id="importFile" accept=".json" class="hidden">
+                                    <i class="fas fa-upload text-green-900 text-2xl mb-3"></i>
+                                    <p class="text-green-900 font-medium mb-2">Upload File Backup</p>
+                                    <p class="text-green-700 text-sm mb-4">Format: JSON</p>
+                                    <button onclick="document.getElementById('importFile').click()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-200">
+                                        <i class="fas fa-file-import mr-2"></i>Pilih File
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="flex justify-end pt-6 border-t">
+                        <button type="button" id="saveSettingsBtn" class="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 px-8 rounded-xl transition duration-200 flex items-center">
+                            <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="resetModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 overflow-y-auto transition-opacity duration-300">
+        <div class="min-h-screen px-4 py-8 flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+                <div class="p-6">
+                    <div class="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                    </div>
+                    
+                    <h2 class="text-xl font-bold text-gray-900 text-center mb-4">Konfirmasi Reset Sistem</h2>
+                    
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                        <p class="text-sm text-red-800 text-center">
+                            <strong>PERINGATAN:</strong> Tindakan ini akan menghapus semua data peserta dan tidak dapat dibatalkan!
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Ketik "RESET" untuk konfirmasi
+                        </label>
+                        <input type="text" id="resetConfirm" class="input-field text-center" placeholder="RESET">
+                    </div>
+
+                    <div class="flex justify-end space-x-4">
+                        <button onclick="closeResetModal()" class="btn-secondary">
+                            Batal
+                        </button>
+                        <button onclick="resetSystem()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-xl transition duration-200">
+                            Reset Sistem
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Storage Management
+        class StorageManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Initialize default data if not exists
+                if (!localStorage.getItem('vinix7_paket')) {
+                    this.setDefaultPaket();
+                }
+                if (!localStorage.getItem('vinix7_peserta')) {
+                    this.setEmptyPeserta();
+                }
+                if (!localStorage.getItem('vinix7_settings')) {
+                    this.setDefaultSettings();
+                }
+                if (!localStorage.getItem('vinix7_admin')) {
+                    this.setDefaultAdmin();
+                }
+            }
+
+            // Paket Management
+            getPaket() {
+                return JSON.parse(localStorage.getItem('vinix7_paket') || '[]');
+            }
+
+            setPaket(paket) {
+                localStorage.setItem('vinix7_paket', JSON.stringify(paket));
+            }
+
+            getPaketById(id) {
+                const paket = this.getPaket();
+                return paket.find(p => p.id === id);
+            }
+
+            // Peserta Management
+            getPeserta() {
+                return JSON.parse(localStorage.getItem('vinix7_peserta') || '[]');
+            }
+
+            setPeserta(peserta) {
+                localStorage.setItem('vinix7_peserta', JSON.stringify(peserta));
+            }
+
+            // Settings Management
+            getSettings() {
+                return JSON.parse(localStorage.getItem('vinix7_settings') || '{}');
+            }
+
+            setSettings(settings) {
+                localStorage.setItem('vinix7_settings', JSON.stringify(settings));
+            }
+
+            // Admin Management
+            getAdmin() {
+                return JSON.parse(localStorage.getItem('vinix7_admin') || '{}');
+            }
+
+            setAdmin(admin) {
+                localStorage.setItem('vinix7_admin', JSON.stringify(admin));
+            }
+
+            // Default Data
+            setDefaultPaket() {
+                const defaultPaket = [
+                    {
+                        id: 'paket1',
+                        nama: 'Basic Explorer: Ekosistem Digital Jogja',
+                        harga: 1250000,
+                        durasi: '3 Hari 2 Malam',
+                        kuota: 30,
+                        pesertaTerdaftar: 0,
+                        thumbnail: 'https://images.unsplash.com/photo-1733826544831-ad71d05c8423?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a3VuanVuZ2FuJTIwc3RhcnR1cHxlbnwwfHwwfHx8Mg%3D%3D',
+                        destinasi: [
+                            'Opening Session: Kumpul di Kolektif Coworking Space & Paparan Tim VINIX7 (Problem Solving Dasar)',
+                            'Company Visit: Kunjungan ke GMEDIA (Gama Multi Integrasi) - Observasi proses bisnis dan insight industri telekomunikasi/teknologi',
+                            'Networking Session: Bertemu dengan Founder dan profesional industri di sesi Angkringan Malam (Networking Informal)',
+                            'Cultural Trip & Fun: Kunjungan ke Museum Sonobudoyo dan Ice Cream Session di Tempo Gelato Prawirotaman'
+                        ],
+                        keunggulan: 'Pengenalan dunia bisnis dan startup dengan pendekatan praktis melalui kunjungan langsung dan sesi hands-on bersama para pelaku industri kreatif dan teknologi Jogja',
+                        deskripsi: 'Paket ideal untuk pemula yang ingin mengenal dunia bisnis dan startup. Program ini dirancang untuk memberikan pengalaman pertama yang berkesan dalam memahami ekosistem digital dan kreatif yang dinamis di Yogyakarta.',
+                        tanggalKeberangkatan: '2025-07-15',
+                        timeline: [
+                            'Hari 1: Kedatangan, Orientasi Program (Opening Session di Coworking Space), Welcome Dinner, dan Company Visit ke GMEDIA',
+                            'Hari 2: Kunjungan Startup (Sleman Digital Valley/Partner Inkubasi), Workshop Entrepreneurship, dan Sesi Mentoring Dasar',
+                            'Hari 3: Networking Breakfast, Cultural Trip (Sonobudoyo), Fun Activity (Tempo Gelato), dan Penutupan Program'
+                        ],
+                        aktif: true
+                    }
+                ];
+                this.setPaket(defaultPaket);
+            }
+
+            setEmptyPeserta() {
+                localStorage.setItem('vinix7_peserta', JSON.stringify([]));
+            }
+
+            setDefaultSettings() {
+                const defaultSettings = {
+                    site_title: 'Vinix7 Study & Business Tour',
+                    contact_email: 'info@vinix7.com',
+                    contact_phone: '+62 812-3456-7890',
+                    whatsapp_group_template: 'https://wa.me/6281234567890',
+                    auto_verification: false,
+                    notification_email: true,
+                    bank_account: {
+                        bank_name: 'BCA',
+                        account_number: '1234 5678 9012',
+                        account_name: 'PT. Vinix7 Indonesia'
+                    }
+                };
+                this.setSettings(defaultSettings);
+            }
+
+            setDefaultAdmin() {
+                const defaultAdmin = {
+                    username: 'admin',
+                    email: 'admin@vinix7.com',
+                    password: 'admin123', // In production, this should be hashed
+                    last_login: new Date().toISOString()
+                };
+                this.setAdmin(defaultAdmin);
+            }
+        }
+
+        // Admin Authentication
+        class AdminAuth {
+            constructor() {
+                this.storage = new StorageManager();
+                this.init();
+            }
+
+            init() {
+                // Check if user is logged in
+                const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+                if (!isLoggedIn && !window.location.href.includes('login.html')) {
+                    window.location.href = 'login.html';
+                }
+            }
+
+            requireAuth() {
+                const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+                if (!isLoggedIn) {
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                return true;
+            }
+
+            getCurrentAdmin() {
+                return this.storage.getAdmin();
+            }
+
+            saveAdminData(adminData) {
+                this.storage.setAdmin(adminData);
+            }
+
+            verifyCurrentPassword(password) {
+                const admin = this.getCurrentAdmin();
+                return admin.password === password; // In production, use proper hashing
+            }
+
+            updatePassword(newPassword) {
+                try {
+                    const admin = this.getCurrentAdmin();
+                    admin.password = newPassword; // In production, hash this password
+                    this.saveAdminData(admin);
+                    return true;
+                } catch (error) {
+                    console.error('Error updating password:', error);
+                    return false;
+                }
+            }
+
+            logout() {
+                localStorage.removeItem('admin_logged_in');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Admin Settings Management
+        class AdminSettings {
+            constructor() {
+                this.storage = new StorageManager();
+                this.adminAuth = new AdminAuth();
+                this.currentTab = 'general';
+                this.init();
+            }
+
+            init() {
+                if (!this.adminAuth.requireAuth()) return;
+                
+                this.loadSettings();
+                this.loadSystemInfo();
+                this.initUserMenu();
+                this.initEventListeners();
+                this.showTab('general');
+            }
+
+            loadSettings() {
+                try {
+                    const settings = this.storage.getSettings();
+                    const adminData = this.adminAuth.getCurrentAdmin();
+
+                    // General Settings
+                    document.getElementById('siteTitle').value = settings.site_title || 'Vinix7 Study & Business Tour';
+                    document.getElementById('contactEmail').value = settings.contact_email || 'info@vinix7.com';
+                    document.getElementById('contactPhone').value = settings.contact_phone || '+62 812-3456-7890';
+                    document.getElementById('whatsappGroup').value = settings.whatsapp_group_template || 'https://wa.me/6281234567890';
+                    document.getElementById('autoVerification').checked = settings.auto_verification || false;
+                    document.getElementById('emailNotification').checked = settings.notification_email || true;
+
+                    // Payment Settings
+                    document.getElementById('bankName').value = settings.bank_account?.bank_name || 'BCA';
+                    document.getElementById('bankAccount').value = settings.bank_account?.account_number || '1234 5678 9012';
+                    document.getElementById('accountName').value = settings.bank_account?.account_name || 'PT. Vinix7 Indonesia';
+                    this.updatePaymentPreview();
+
+                    // Security Settings
+                    document.getElementById('currentUsername').value = adminData.username || 'admin';
+                    document.getElementById('adminEmail').value = adminData.email || 'admin@vinix7.com';
+                    
+                    const lastLogin = adminData.last_login ? new Date(adminData.last_login) : new Date();
+                    document.getElementById('sessionInfo').textContent = `Terakhir login: ${this.formatDate(lastLogin)}`;
+
+                    // Clear password fields
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+
+                } catch (error) {
+                    this.showAlert('error', 'Gagal memuat pengaturan sistem');
+                }
+            }
+
+            loadSystemInfo() {
+                try {
+                    const peserta = this.storage.getPeserta();
+                    const paket = this.storage.getPaket();
+
+                    document.getElementById('systemTotalPeserta').textContent = peserta.length;
+                    document.getElementById('systemTotalPaket').textContent = paket.length;
+                    document.getElementById('systemDataSize').textContent = this.calculateDataSize();
+
+                } catch (error) {
+                    console.error('Error loading system info:', error);
+                }
+            }
+
+            initUserMenu() {
+                const userMenu = document.getElementById('userMenu');
+                const dropdownMenu = document.getElementById('dropdownMenu');
+
+                if (userMenu && dropdownMenu) {
+                    userMenu.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdownMenu.classList.toggle('hidden');
+                    });
+
+                    document.addEventListener('click', (e) => {
+                        if (!userMenu.contains(e.target)) {
+                            dropdownMenu.classList.add('hidden');
+                        }
+                    });
+                }
+            }
+
+            initEventListeners() {
+                // Payment preview update
+                document.getElementById('bankName').addEventListener('input', () => this.updatePaymentPreview());
+                document.getElementById('bankAccount').addEventListener('input', () => this.updatePaymentPreview());
+                document.getElementById('accountName').addEventListener('input', () => this.updatePaymentPreview());
+
+                // Import file handler
+                document.getElementById('importFile').addEventListener('change', (e) => {
+                    this.handleImportFile(e.target.files[0]);
+                });
+
+                // Tab click events
+                document.querySelectorAll('.tab-button').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const tabName = tab.getAttribute('data-tab');
+                        this.showTab(tabName);
+                    });
+                });
+
+                // Save button
+                const saveButton = document.getElementById('saveSettingsBtn');
+                if (saveButton) {
+                    saveButton.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.saveAllSettings();
+                    });
+                }
+            }
+
+            updatePaymentPreview() {
+                document.getElementById('previewBank').textContent = document.getElementById('bankName').value || 'BCA';
+                document.getElementById('previewAccount').textContent = document.getElementById('bankAccount').value || '1234 5678 9012';
+                document.getElementById('previewName').textContent = document.getElementById('accountName').value || 'PT. Vinix7 Indonesia';
+            }
+
+            showTab(tabName) {
+                this.currentTab = tabName;
+                
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(tab => {
+                    tab.classList.remove('border-blue-900', 'text-blue-900');
+                    tab.classList.add('border-transparent', 'text-gray-500');
+                });
+                
+                const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+                if (activeTab) {
+                    activeTab.classList.add('border-blue-900', 'text-blue-900');
+                }
+
+                // Update tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    content.classList.add('hidden');
+                });
+                
+                const activeContent = document.getElementById(tabName + 'Content');
+                if (activeContent) {
+                    activeContent.classList.add('active');
+                    activeContent.classList.remove('hidden');
+                }
+            }
+
+            saveAllSettings() {
+                try {
+                    const settings = this.storage.getSettings();
+                    const adminData = this.adminAuth.getCurrentAdmin();
+                    let hasChanges = false;
+
+                    if (this.currentTab === 'general') {
+                        const newSettings = {
+                            site_title: document.getElementById('siteTitle').value.trim(),
+                            contact_email: document.getElementById('contactEmail').value.trim(),
+                            contact_phone: document.getElementById('contactPhone').value.trim(),
+                            whatsapp_group_template: document.getElementById('whatsappGroup').value.trim(),
+                            auto_verification: document.getElementById('autoVerification').checked,
+                            notification_email: document.getElementById('emailNotification').checked
+                        };
+
+                        if (!newSettings.site_title) {
+                            this.showAlert('error', 'Nama Website wajib diisi');
+                            return;
+                        }
+                        if (!newSettings.contact_email) {
+                            this.showAlert('error', 'Email Kontak wajib diisi');
+                            return;
+                        }
+                        if (!newSettings.contact_phone) {
+                            this.showAlert('error', 'Nomor Telepon wajib diisi');
+                            return;
+                        }
+
+                        Object.assign(settings, newSettings);
+                        hasChanges = true;
+                    }
+
+                    if (this.currentTab === 'payment') {
+                        const paymentSettings = {
+                            bank_name: document.getElementById('bankName').value.trim(),
+                            account_number: document.getElementById('bankAccount').value.trim(),
+                            account_name: document.getElementById('accountName').value.trim()
+                        };
+
+                        if (!paymentSettings.bank_name) {
+                            this.showAlert('error', 'Nama Bank wajib diisi');
+                            return;
+                        }
+                        if (!paymentSettings.account_number) {
+                            this.showAlert('error', 'Nomor Rekening wajib diisi');
+                            return;
+                        }
+                        if (!paymentSettings.account_name) {
+                            this.showAlert('error', 'Nama Pemilik Rekening wajib diisi');
+                            return;
+                        }
+
+                        settings.bank_account = paymentSettings;
+                        hasChanges = true;
+                    }
+
+                    if (this.currentTab === 'security') {
+                        const newAdminEmail = document.getElementById('adminEmail').value.trim();
+                        
+                        if (!newAdminEmail) {
+                            this.showAlert('error', 'Email Administrator wajib diisi');
+                            return;
+                        }
+                        
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(newAdminEmail)) {
+                            this.showAlert('error', 'Format email administrator tidak valid');
+                            return;
+                        }
+                        
+                        if (adminData.email !== newAdminEmail) {
+                            adminData.email = newAdminEmail;
+                            this.adminAuth.saveAdminData(adminData);
+                            hasChanges = true;
+                        }
+
+                        const currentPassword = document.getElementById('currentPassword').value;
+                        const newPassword = document.getElementById('newPassword').value;
+                        const confirmPassword = document.getElementById('confirmPassword').value;
+
+                        const isChangingPassword = currentPassword || newPassword || confirmPassword;
+                        
+                        if (isChangingPassword) {
+                            if (this.changePassword(currentPassword, newPassword, confirmPassword)) {
+                                hasChanges = true;
+                            } else {
+                                return;
+                            }
+                        }
+                    }
+
+                    if (hasChanges) {
+                        this.storage.setSettings(settings);
+                        this.showAlert('success', `Pengaturan ${this.getTabName(this.currentTab)} berhasil disimpan!`);
+                        
+                        if (this.currentTab === 'security') {
+                            document.getElementById('currentPassword').value = '';
+                            document.getElementById('newPassword').value = '';
+                            document.getElementById('confirmPassword').value = '';
+                        }
+
+                        setTimeout(() => {
+                            this.loadSettings();
+                        }, 500);
+                    } else {
+                        this.showAlert('info', 'Tidak ada perubahan yang perlu disimpan');
+                    }
+
+                } catch (error) {
+                    this.showAlert('error', 'Terjadi kesalahan saat menyimpan pengaturan');
+                }
+            }
+
+            getTabName(tabKey) {
+                const tabNames = {
+                    'general': 'Umum',
+                    'payment': 'Pembayaran', 
+                    'security': 'Keamanan',
+                    'system': 'Sistem'
+                };
+                return tabNames[tabKey] || 'Pengaturan';
+            }
+
+            changePassword(currentPassword, newPassword, confirmPassword) {
+                try {
+                    if (!currentPassword) {
+                        this.showAlert('error', 'Harap masukkan password saat ini');
+                        return false;
+                    }
+
+                    if (!newPassword) {
+                        this.showAlert('error', 'Harap masukkan password baru');
+                        return false;
+                    }
+
+                    if (!confirmPassword) {
+                        this.showAlert('error', 'Harap masukkan konfirmasi password');
+                        return false;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        this.showAlert('error', 'Konfirmasi password tidak sesuai');
+                        return false;
+                    }
+
+                    if (newPassword.length < 6) {
+                        this.showAlert('error', 'Password minimal 6 karakter');
+                        return false;
+                    }
+
+                    if (!this.adminAuth.verifyCurrentPassword(currentPassword)) {
+                        this.showAlert('error', 'Password saat ini salah');
+                        return false;
+                    }
+
+                    if (this.adminAuth.updatePassword(newPassword)) {
+                        this.showAlert('success', 'Password berhasil diubah!');
+                        return true;
+                    } else {
+                        this.showAlert('error', 'Gagal mengubah password');
+                        return false;
+                    }
+
+                } catch (error) {
+                    this.showAlert('error', 'Terjadi kesalahan saat mengubah password');
+                    return false;
+                }
+            }
+
+            backupData() {
+                try {
+                    const backup = {
+                        peserta: this.storage.getPeserta(),
+                        paket: this.storage.getPaket(),
+                        admin: this.adminAuth.getCurrentAdmin(),
+                        settings: this.storage.getSettings(),
+                        timestamp: new Date().toISOString(),
+                        version: '1.0.0'
+                    };
+
+                    const dataStr = JSON.stringify(backup, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `vinix7-backup-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+
+                    this.showAlert('success', 'Backup data berhasil didownload!');
+                    
+                } catch (error) {
+                    this.showAlert('error', 'Gagal membuat backup');
+                }
+            }
+
+            handleImportFile(file) {
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const backup = JSON.parse(e.target.result);
+                        
+                        if (!backup.peserta || !backup.paket || !backup.settings) {
+                            throw new Error('Format file backup tidak valid');
+                        }
+
+                        if (confirm('Apakah Anda yakin ingin mengimpor data backup? Data saat ini akan diganti.')) {
+                            this.storage.setPeserta(backup.peserta);
+                            this.storage.setPaket(backup.paket);
+                            this.storage.setSettings(backup.settings);
+                            
+                            if (backup.admin) {
+                                this.adminAuth.saveAdminData(backup.admin);
+                            }
+
+                            this.showAlert('success', 'Data backup berhasil diimpor!');
+                            this.loadSystemInfo();
+                            this.loadSettings();
+                        }
+                    } catch (error) {
+                        this.showAlert('error', 'Gagal mengimpor data');
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            resetSystem() {
+                const confirmText = document.getElementById('resetConfirm').value;
+                
+                if (confirmText !== 'RESET') {
+                    this.showAlert('error', 'Harap ketik "RESET" untuk konfirmasi');
+                    return;
+                }
+
+                try {
+                    this.storage.setPeserta([]);
+                    
+                    const paket = this.storage.getPaket().map(p => ({
+                        ...p,
+                        pesertaTerdaftar: 0
+                    }));
+                    this.storage.setPaket(paket);
+
+                    this.showAlert('success', 'Sistem berhasil direset!');
+                    this.closeResetModal();
+                    this.loadSystemInfo();
+                    
+                } catch (error) {
+                    this.showAlert('error', 'Gagal mereset sistem');
+                }
+            }
+
+            calculateDataSize() {
+                const data = {
+                    peserta: localStorage.getItem('vinix7_peserta'),
+                    paket: localStorage.getItem('vinix7_paket'),
+                    admin: localStorage.getItem('vinix7_admin'),
+                    settings: localStorage.getItem('vinix7_settings')
+                };
+
+                const totalSize = Object.values(data).reduce((total, item) => {
+                    return total + (item ? new Blob([item]).size : 0);
+                }, 0);
+
+                return this.formatFileSize(totalSize);
+            }
+
+            formatDate(date) {
+                return date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            showAlert(type, message) {
+                const existingAlerts = document.querySelectorAll('.vinix7-alert');
+                existingAlerts.forEach(alert => alert.remove());
+
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `vinix7-alert fixed top-4 right-4 z-50 px-6 py-3 rounded-xl shadow-lg transform transition-all duration-300 translate-x-full ${
+                    type === 'success' ? 'bg-green-500 text-white' : 
+                    type === 'error' ? 'bg-red-500 text-white' : 
+                    'bg-blue-500 text-white'
+                }`;
+                alertDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation' : 'info'}-circle mr-2"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                document.body.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    alertDiv.classList.remove('translate-x-full');
+                }, 100);
+                
+                setTimeout(() => {
+                    alertDiv.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        alertDiv.remove();
+                    }, 300);
+                }, 4000);
+            }
+
+            closeResetModal() {
+                document.getElementById('resetModal').classList.add('hidden');
+                document.getElementById('resetConfirm').value = '';
+            }
+        }
+
+        // Global functions
+        function showTab(tabName) {
+            window.adminSettingsInstance.showTab(tabName);
+        }
+
+        function backupData() {
+            window.adminSettingsInstance.backupData();
+        }
+
+        function showResetModal() {
+            document.getElementById('resetModal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            window.adminSettingsInstance.closeResetModal();
+        }
+
+        function resetSystem() {
+            window.adminSettingsInstance.resetSystem();
+        }
+
+        function logoutAllSessions() {
+            if (confirm('Apakah Anda yakin ingin logout dari semua sesi?')) {
+                window.adminAuth.logout();
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set admin as logged in for demo purposes
+            localStorage.setItem('admin_logged_in', 'true');
+            
+            // Initialize classes
+            window.storage = new StorageManager();
+            window.adminAuth = new AdminAuth();
+            window.adminSettingsInstance = new AdminSettings();
+        });
+    </script>
+</body>
+</html>
